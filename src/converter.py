@@ -11,7 +11,7 @@ from typing import Optional
 
 from markdownify import markdownify as md
 
-from .config import DOWNLOAD_MEDIA, MEDIA_DIR, OUTPUT_DIR, USE_DATED_SUBFOLDER
+from . import config
 from .models import Article
 
 logger = logging.getLogger(__name__)
@@ -27,7 +27,7 @@ def _sanitize_filename(name: str) -> str:
 
 
 def _resolve_output_dir(base: Path) -> Path:
-    target = base / date.today().isoformat() if USE_DATED_SUBFOLDER else base
+    target = base / date.today().isoformat() if config.USE_DATED_SUBFOLDER else base
     target.mkdir(parents=True, exist_ok=True)
     return target
 
@@ -103,14 +103,14 @@ def convert_article(
     Returns:
         The Path of the written Markdown file.
     """
-    base = output_dir or OUTPUT_DIR
-    m_dir = media_dir or MEDIA_DIR
+    base = output_dir or config.OUTPUT_DIR
+    m_dir = media_dir or config.MEDIA_DIR
     target_dir = _resolve_output_dir(base)
 
     html_body = article.body_html
 
     # Download media files and rewrite HTML src/href to local paths
-    if DOWNLOAD_MEDIA and html_body:
+    if config.DOWNLOAD_MEDIA and html_body:
         from . import media_downloader
         try:
             html_body = media_downloader.process(html_body, m_dir, target_dir)
