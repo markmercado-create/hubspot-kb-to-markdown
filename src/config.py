@@ -22,12 +22,15 @@ def _resolve(path_str: str) -> Path:
 
 INPUT_DIR: Path = _resolve(os.getenv("INPUT_DIR", "input"))
 OUTPUT_DIR: Path = _resolve(os.getenv("OUTPUT_DIR", "output"))
+MEDIA_DIR: Path = _resolve(os.getenv("MEDIA_DIR", "output/media_files"))
 USE_DATED_SUBFOLDER: bool = os.getenv("USE_DATED_SUBFOLDER", "false").lower() == "true"
+DOWNLOAD_MEDIA: bool = os.getenv("DOWNLOAD_MEDIA", "true").lower() == "true"
 LOG_LEVEL: str = os.getenv("LOG_LEVEL", "INFO").upper()
 
-# Known HubSpot CSV column names, in priority order.
-# The parser will use the first matching column it finds in the CSV.
-# Covers both the real HubSpot export format and any custom variations.
+# Supported input file extensions
+SUPPORTED_EXTENSIONS: set[str] = {".csv", ".xls", ".xlsx", ".html", ".htm"}
+
+# Known HubSpot CSV/Excel column names, in priority order.
 COLUMN_CANDIDATES = {
     "title":         ["article title", "article_title", "title", "name"],
     "body":          ["article body", "article_body", "body", "content", "html", "body html", "body_html"],
@@ -45,6 +48,6 @@ COLUMN_CANDIDATES = {
 
 logging.basicConfig(
     level=getattr(logging, LOG_LEVEL, logging.INFO),
-    format="%(asctime)s [%(levelname)s] %(name)s — %(message)s",
+    format="%(asctime)s [%(levelname)s] %(name)s - %(message)s",
     datefmt="%Y-%m-%d %H:%M:%S",
 )
