@@ -59,15 +59,6 @@ def process(html: str, media_dir: Path, article_dir: Path) -> str:
 
     # Compute the relative path from the article file to the media folder
     try:
-        rel_media = Path(
-            "../" * len(article_dir.relative_to(article_dir.parent).parts)
-            + "media_files"
-        )
-    except ValueError:
-        rel_media = Path("../media_files")
-
-    # Recompute properly
-    try:
         parts_up = len(article_dir.relative_to(media_dir.parent).parts)
         rel_media = Path("../" * parts_up + "media_files")
     except ValueError:
