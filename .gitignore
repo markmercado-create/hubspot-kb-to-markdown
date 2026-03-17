@@ -1,0 +1,25 @@
+# Personal config — never commit real credentials or paths
+.env
+
+# Python cache
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# Virtual environments
+.venv/
+venv/
+env/
+
+# Input CSVs — may contain private KB content; share manually
+input/*.csv
+!input/sample_export.csv
+
+# Converted output files — generated, not source code
+output/*.md
+
+# macOS / Windows noise
+.DS_Store
+Thumbs.db
+desktop.ini
