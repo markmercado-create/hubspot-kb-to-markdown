@@ -10,6 +10,7 @@ Referenced in Markdown as: <relative_path_to_media_files>/filename
 import hashlib
 import logging
 import mimetypes
+import os
 import re
 from pathlib import Path
 from urllib.parse import urljoin, urlparse
@@ -57,12 +58,10 @@ def process(html: str, media_dir: Path, article_dir: Path) -> str:
     soup = BeautifulSoup(html, "html.parser")
     media_dir.mkdir(parents=True, exist_ok=True)
 
-    # Compute the relative path from the article file to the media folder
-    try:
-        parts_up = len(article_dir.relative_to(media_dir.parent).parts)
-        rel_media = Path("../" * parts_up + "media_files")
-    except ValueError:
-        rel_media = Path("media_files")
+    # Compute the relative path from the article's directory to the media folder.
+    # os.path.relpath handles all cases correctly, including when article_dir
+    # and media_dir share the same parent (e.g. output/ vs output/media_files/).
+    rel_media = Path(os.path.relpath(media_dir, article_dir))
 
     downloaded: dict[str, str] = {}  # original_url -> local_relative_path
 
